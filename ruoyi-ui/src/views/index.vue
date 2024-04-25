@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="curtain">
-      <h1 data-heading="场">羽毛球场预约管理系统</h1>
+      <h1 data-heading="子">景区电子门票预订管理系统</h1>
     </div>
     <div>
       <el-carousel :interval="4000" type="card" height="300px">
@@ -51,11 +51,10 @@
             </el-table>
           </el-card>
         </el-col>
-        <!-- 场馆场地数量 -->
         <el-col :span="12">
           <el-card style="margin-right: 20px; height: 420px;">
-            <h3 slot="header">场地数量</h3>
-              <div id="venueCourtChart" style="height: 300px;"></div> <!-- echarts 柱状图 -->
+            <h3 slot="header">系统简介</h3>
+            <p>请在这里填写更多的文字说明</p>
           </el-card>
         </el-col>
       </el-row>
