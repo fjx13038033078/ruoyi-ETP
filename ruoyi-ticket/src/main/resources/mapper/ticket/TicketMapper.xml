@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ticket.mapper.TicketMapper">
+
+    <!-- 购票记录结果映射 -->
+    <resultMap type="Ticket" id="TicketResultMap">
+        <id property="ticketId" column="ticket_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="attractionsId" column="attractions_id"/>
+        <result property="ticketType" column="ticket_type"/>
+        <result property="ticketStatus" column="ticket_status"/>
+        <result property="ticketAmount" column="ticket_amount"/>
+        <result property="transactionTime" column="transaction_time"/>
+        <result property="balance" column="balance"/>
+    </resultMap>
+
+    <!-- 查询所有购票记录 -->
+    <select id="getAllTickets" resultMap="TicketResultMap">
+        SELECT * FROM etp_ticket
+    </select>
+
+    <!-- 根据ID查询购票记录 -->
+    <select id="getTicketById" parameterType="long" resultMap="TicketResultMap">
+        SELECT * FROM etp_ticket WHERE ticket_id = #{ticketId}
+    </select>
+
+    <!-- 根据用户ID查询购票记录 -->
+    <select id="getTicketsByUserId" parameterType="long" resultMap="TicketResultMap">
+        SELECT * FROM etp_ticket WHERE user_id = #{userId}
+    </select>
+
+    <!-- 根据景点ID查询购票记录 -->
+    <select id="getTicketsByAttractionsId" parameterType="long" resultMap="TicketResultMap">
+        SELECT * FROM etp_ticket WHERE attractions_id = #{attractionsId}
+    </select>
+
+    <!-- 添加购票记录 -->
+    <insert id="addTicket" parameterType="Ticket">
+        INSERT INTO etp_ticket (user_id, attractions_id, ticket_type, ticket_status, ticket_amount, transaction_time, balance)
+        VALUES (#{userId}, #{attractionsId}, #{ticketType}, #{ticketStatus}, #{ticketAmount}, #{transactionTime}, #{balance})
+    </insert>
+
+</mapper>
