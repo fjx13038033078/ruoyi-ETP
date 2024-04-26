@@ -49,4 +49,26 @@ public class AttractionsServiceImpl implements AttractionsService {
         int rows = attractionsMapper.addAttractions(attractions);
         return rows > 0;
     }
+
+    /**
+     * 更新景点信息
+     * @param attractions 待更新的景点信息
+     * @return 更新成功返回 true，否则返回 false
+     */
+    @Override
+    public boolean updateAttractions(Attractions attractions) {
+        int rows = attractionsMapper.updateAttractions(attractions);
+        return rows > 0;
+    }
+
+    /**
+     * 删除景点
+     * @param attractionsId 待删除的景点ID
+     * @return 删除成功返回 true，否则返回 false
+     */
+    @Override
+    public boolean deleteAttractionsById(Long attractionsId) {
+        int rows = attractionsMapper.deleteAttractionsById(attractionsId);
+        return rows > 0;
+    }
 }

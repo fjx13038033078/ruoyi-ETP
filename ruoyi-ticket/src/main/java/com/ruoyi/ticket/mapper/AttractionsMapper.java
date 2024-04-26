@@ -35,4 +35,20 @@ public interface AttractionsMapper {
      * @return 添加成功返回影响的行数，否则返回0
      */
     int addAttractions(Attractions attractions);
+
+    /**
+     * 更新景点
+     *
+     * @param attractions 待更新的景点
+     * @return 更新成功返回影响的行数，否则返回0
+     */
+    int updateAttractions(Attractions attractions);
+
+    /**
+     * 删除景点
+     *
+     * @param attractionsId 待删除的景点ID
+     * @return 删除成功返回影响的行数，否则返回0
+     */
+    int deleteAttractionsById(Long attractionsId);
 }

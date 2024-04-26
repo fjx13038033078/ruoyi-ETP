@@ -51,4 +51,12 @@ public interface TicketMapper {
      * @return 添加成功返回影响的行数，否则返回0
      */
     int addTicket(Ticket ticket);
+
+    /**
+     * 更新购票记录
+     *
+     * @param ticket 待更新的购票记录
+     * @return 更新成功返回影响的行数，否则返回0
+     */
+    int updateTicket(Ticket ticket);
 }

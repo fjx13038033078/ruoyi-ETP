@@ -30,4 +30,18 @@ public interface AttractionsService {
      * @return 添加成功返回 true，否则返回 false
      */
     boolean addAttractions(Attractions attractions);
+
+    /**
+     * 删除景点
+     * @param attractionsId 待删除的景点ID
+     * @return 删除成功返回 true，否则返回 false
+     */
+    boolean deleteAttractionsById(Long attractionsId);
+
+    /**
+     * 更新景点
+     * @param attractions 待更新的景点信息
+     * @return 更新成功返回 true，否则返回 false
+     */
+    boolean updateAttractions(Attractions attractions);
 }

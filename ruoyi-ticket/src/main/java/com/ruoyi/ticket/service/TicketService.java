@@ -30,4 +30,11 @@ public interface TicketService {
      * @return 添加成功返回 true，否则返回 false
      */
     boolean addTicket(Ticket ticket);
+
+    /**
+     * 更新购票记录
+     * @param ticket 待更新的购票信息
+     * @return 更新成功返回 true，否则返回 false
+     */
+    boolean updateTicket(Ticket ticket);
 }

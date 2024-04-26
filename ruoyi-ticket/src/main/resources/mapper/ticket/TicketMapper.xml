@@ -42,4 +42,19 @@
         VALUES (#{userId}, #{attractionsId}, #{ticketType}, #{ticketStatus}, #{ticketAmount}, #{transactionTime}, #{balance})
     </insert>
 
+    <!-- 更新购票记录 -->
+    <update id="updateTicket" parameterType="Ticket">
+        UPDATE etp_ticket
+        <set>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="attractionsId != null">attractions_id = #{attractionsId},</if>
+            <if test="ticketType != null">ticket_type = #{ticketType},</if>
+            <if test="ticketStatus != null">ticket_status = #{ticketStatus},</if>
+            <if test="ticketAmount != null">ticket_amount = #{ticketAmount},</if>
+            <if test="transactionTime != null">transaction_time = #{transactionTime},</if>
+            <if test="balance != null">balance = #{balance},</if>
+        </set>
+        WHERE ticket_id = #{ticketId}
+    </update>
+
 </mapper>

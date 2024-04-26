@@ -30,4 +30,20 @@
         VALUES (#{attractionsName}, #{location}, #{description}, #{ticketPrice}, #{image})
     </insert>
 
+    <!-- 修改景点 -->
+    <update id="updateAttractions" parameterType="Attractions">
+            UPDATE etp_attractions SET
+                attractions_name = #{attractionsName},
+                location = #{location},
+                description = #{description},
+                ticket_price = #{ticketPrice},
+                image = #{image}
+            WHERE attractions_id = #{attractionsId}
+    </update>
+
+    <!-- 删除景点 -->
+    <delete id="deleteAttractionsById" parameterType="long">
+            DELETE FROM etp_attractions WHERE attractions_id = #{attractionsId}
+    </delete>
+
 </mapper>

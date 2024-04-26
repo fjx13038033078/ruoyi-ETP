@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Reservation implements Serializable {
+public class AttractionsReservation implements Serializable {
     /**
      * 主键
      */

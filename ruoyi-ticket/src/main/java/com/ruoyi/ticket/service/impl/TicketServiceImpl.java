@@ -50,4 +50,15 @@ public class TicketServiceImpl implements TicketService {
         int rows = ticketMapper.addTicket(ticket);
         return rows > 0;
     }
+
+    /**
+     * 更新购票记录
+     * @param ticket 待更新的购票信息
+     * @return 更新成功返回 true，否则返回 false
+     */
+    @Override
+    public boolean updateTicket(Ticket ticket) {
+        int rows = ticketMapper.updateTicket(ticket);
+        return rows > 0;
+    }
 }
