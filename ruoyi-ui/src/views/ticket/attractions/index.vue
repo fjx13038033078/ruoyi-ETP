@@ -1,13 +1,14 @@
 <template>
   <div>
     <!-- 景点管理页面内容 -->
-    <div v-if="activeTab === 'attractions'">
+    <div >
       <div class="app-container">
         <!-- 添加景点按钮 -->
         <el-row :gutter="20" class="mb-20" style="margin-bottom: 20px;">
           <el-col>
             <el-button type="primary" @click="handleAddAttractions" v-hasPermi="['ticket:attractions:add']"
-            >新增景点</el-button>
+            >新增景点
+            </el-button>
           </el-col>
         </el-row>
 
@@ -20,16 +21,19 @@
           <el-table-column label="门票价格" prop="ticketPrice" align="center"></el-table-column>
           <el-table-column label="操作" align="center" width="380px">
             <template slot-scope="scope">
-<!--              <el-button type="info" size="mini" @click="handleReserve(scope.row)" v-hasPermi="['ticket:attractions:reserve']">-->
-<!--                预约-->
-<!--              </el-button>-->
-              <el-button type="success" size="mini" @click="handleView(scope.row)" v-hasPermi="['ticket:attractions:detail']">
+              <!--              <el-button type="info" size="mini" @click="handleReserve(scope.row)" v-hasPermi="['ticket:attractions:reserve']">-->
+              <!--                预约-->
+              <!--              </el-button>-->
+              <el-button type="success" size="mini" @click="handleView(scope.row)"
+                         v-hasPermi="['ticket:attractions:detail']">
                 查看
               </el-button>
-              <el-button type="primary" size="mini" @click="handleEdit(scope.row)" v-hasPermi="['ticket:attractions:edit']">
+              <el-button type="primary" size="mini" @click="handleEdit(scope.row)"
+                         v-hasPermi="['ticket:attractions:edit']">
                 编辑
               </el-button>
-              <el-button type="danger" size="mini" @click="handleDelete(scope.row)" v-hasPermi="['ticket:attractions:delete']">
+              <el-button type="danger" size="mini" @click="handleDelete(scope.row)"
+                         v-hasPermi="['ticket:attractions:delete']">
                 删除
               </el-button>
             </template>
@@ -89,7 +93,13 @@
 </template>
 
 <script>
-import {addAttractions, deleteAttractions, getAttractions, listAttractions,updateAttractions} from "@/api/ticket/attractions";
+import {
+  addAttractions,
+  deleteAttractions,
+  getAttractions,
+  listAttractions,
+  updateAttractions
+} from "@/api/ticket/attractions";
 
 export default {
   data() {
