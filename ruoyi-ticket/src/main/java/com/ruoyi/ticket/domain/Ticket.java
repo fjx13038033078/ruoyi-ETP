@@ -41,6 +41,11 @@ public class Ticket implements Serializable {
     private Long attractionsId;
 
     /**
+     * 预约ID
+     */
+    private Long reservationId;
+
+    /**
      * 门票类型：0 收入，1 全价票，2 优惠票
      */
     private Integer ticketType;

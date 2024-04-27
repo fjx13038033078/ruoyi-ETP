@@ -15,9 +15,14 @@
               {{ scope.row.reservationStatus === 0 ? '已预约' : '已取消' }}
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="160px">
+          <el-table-column label="操作" align="center" width="230px">
             <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="cancelReservation(scope.row)" v-hasPermi="['ticket:reservation:cancel']">取消预约</el-button>
+              <el-button type="success" size="mini" @click="handlePurchase(scope.row)" v-hasPermi="['ticket:reservation:purchase']">
+                支付
+              </el-button>
+              <el-button type="danger" size="mini" @click="cancelReservation(scope.row)" v-hasPermi="['ticket:reservation:cancel']">
+                取消预约
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -38,6 +43,7 @@
 
 <script>
 import { listReservations, cancelReservation } from '@/api/ticket/reservation'
+import {addTicket} from "@/api/ticket/ticket";
 
 export default {
   data() {
@@ -75,7 +81,20 @@ export default {
           this.fetchReservations();
         });
       });
-    }
+    },
+
+    // 处理购买操作
+    handlePurchase(row) {
+      // 获取预订信息
+      const { reservationId } = row;
+      // 调用添加订单记录接口
+      addTicket({
+        reservationId: reservationId,
+      }).then(() => {
+        // 添加订单记录成功后的处理逻辑
+        this.$message.success('购买成功！');
+      });
+    },
   }
 };
 </script>
