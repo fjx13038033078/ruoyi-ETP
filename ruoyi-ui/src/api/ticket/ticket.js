@@ -22,8 +22,8 @@ export function getTicket(ticketId) {
 export function addTicket(data) {
   return request({
     url: '/ticket/ticket/add',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 
@@ -31,7 +31,7 @@ export function addTicket(data) {
 export function updateTicket(data) {
   return request({
     url: '/ticket/ticket/update',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }

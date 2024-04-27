@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 景点管理页面内容 -->
-    <div >
+    <div v-if="activeTab === 'attractions'">
       <div class="app-container">
         <!-- 添加景点按钮 -->
         <el-row :gutter="20" class="mb-20" style="margin-bottom: 20px;">
@@ -19,11 +19,12 @@
           <el-table-column label="景点位置" prop="location" align="center"></el-table-column>
           <el-table-column label="景点描述" prop="description" align="center"></el-table-column>
           <el-table-column label="门票价格" prop="ticketPrice" align="center"></el-table-column>
-          <el-table-column label="操作" align="center" width="380px">
+          <el-table-column label="操作" align="center" width="310px">
             <template slot-scope="scope">
-              <!--              <el-button type="info" size="mini" @click="handleReserve(scope.row)" v-hasPermi="['ticket:attractions:reserve']">-->
-              <!--                预约-->
-              <!--              </el-button>-->
+              <el-button type="info" size="mini" @click="handleReserve(scope.row)"
+                         v-hasPermi="['ticket:attractions:reserve']">
+                预约
+              </el-button>
               <el-button type="success" size="mini" @click="handleView(scope.row)"
                          v-hasPermi="['ticket:attractions:detail']">
                 查看
@@ -87,6 +88,32 @@
             <el-button type="primary" @click="handleSubmit">{{ dialogButtonText }}</el-button>
           </div>
         </el-dialog>
+
+        <!-- 预约对话框 -->
+        <el-dialog :visible.sync="reserveDialogVisible" title="预约场地" width="30%" @close="handleCloseDialog">
+          <!-- 预约对话框内容 -->
+          <div>
+            <!-- 预约起止时间选择器 -->
+            <div class="block">
+              <span class="demonstration" style="display: block; margin-bottom: 10px;">选择预约起止时间：</span>
+              <el-date-picker
+                v-model="reservationTime"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期时间"
+                end-placeholder="结束日期时间"
+                :picker-options="pickerOptions"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-ddTHH:mm:ssZ">
+              </el-date-picker>
+            </div>
+          </div>
+          <!-- 预约对话框底部按钮 -->
+          <div slot="footer" class="dialog-footer" style="text-align: center;">
+            <el-button @click="handleCloseDialog">取消</el-button>
+            <el-button type="primary" @click="confirmReservation">确定预约</el-button>
+          </div>
+        </el-dialog>
       </div>
     </div>
   </div>
@@ -100,12 +127,13 @@ import {
   listAttractions,
   updateAttractions
 } from "@/api/ticket/attractions";
+import {addReservation} from "@/api/ticket/reservation";
 
 export default {
   data() {
     return {
       loading: true,// 遮罩层
-      activeTab: 'product', // 当前激活的选项卡，默认为景点管理
+      activeTab: 'attractions', // 当前激活的选项卡，默认为景点管理
       attractionsList: [], // 景点列表数据
       totalAttractions: 0,// 总条数
       dialogVisible: false, // 控制新增/编辑景点对话框的显示与隐藏
@@ -123,6 +151,29 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10
+      },
+      // 预约对话框
+      reserveDialogVisible: false, // 控制预约对话框的显示与隐藏
+      reservationTime: [],// 存储预约起止时间的数组，数组的第一个元素为开始时间，第二个元素为结束时间
+      selectedAttractionsId: null,// 选中的场地ID，默认为null
+      pickerOptions: {
+        disabledDate(time) {
+          // 获取当前日期
+          const today = new Date();
+          // 获取一周后的日期
+          const oneWeekLater = new Date(today.getTime() + 8 * 24 * 60 * 60 * 1000);
+          // 将时间戳转换为年月日格式的字符串
+          const currentDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+          const oneWeekLaterDate = oneWeekLater.getFullYear() + '-' + (oneWeekLater.getMonth() + 1) + '-' + oneWeekLater.getDate();
+          // 将当前日期转换为毫秒数
+          const currentTime = new Date(currentDate).getTime();
+          // 将一周后日期转换为毫秒数
+          const oneWeekLaterTime = new Date(oneWeekLaterDate).getTime();
+          // 将传入的时间参数转换为毫秒数
+          const targetTime = time.getTime();
+          // 如果传入时间小于等于当前时间或者大于一周后的时间，则禁用
+          return targetTime <= currentTime || targetTime >= oneWeekLaterTime;
+        }
       }
     }
   },
@@ -151,23 +202,19 @@ export default {
       }
     },
 
-    // // 预约景点
-    // handleReserve(row) {
-    //   // 获取预约景点信息
-    //   const {attractionsId, attractionsName, location, description, ticketPrice, image} = row
-    //   // 调用添加订单记录接口
-    //   addAttractions({
-    //     attractionsId,
-    //     attractionsName,
-    //     location,
-    //     description,
-    //     ticketPrice,
-    //     image
-    //   }).then(() => {
-    //     // 添加成功后提示用户
-    //     this.$message.success('预约成功！');
-    //   });
-    // },
+    // 处理预约按钮点击事件
+    handleReserve(row) {
+      // 获取场地ID
+      const attractionsId = row.attractionsId;
+      this.attractionsForm.description = row.description
+      this.attractionsForm.location = row.location
+      this.attractionsForm.attractionsName = row.attractionsName
+      this.attractionsForm.ticketPrice = row.ticketPrice
+      this.dialogTitle = '预约场地'; // 设置对话框标题为预约场地
+      this.reserveDialogVisible = true; // 打开预约对话框
+      // 将选中的场地ID赋值给selectedAttractionsId
+      this.selectedAttractionsId = attractionsId;
+    },
 
     // 添加景点
     handleAddAttractions() {
@@ -202,6 +249,7 @@ export default {
         this.dialogButtonText = '更新成功'
       })
     },
+
     // 查看景点详情
     handleView(row) {
       // 设置对话框标题为查看景点详情
@@ -221,6 +269,7 @@ export default {
         console.error('获取景点详情失败:', error);
       });
     },
+
     // 删除景点
     handleDelete(row) {
       // 弹出确认框，确认删除后调用删除景点方法
@@ -236,14 +285,10 @@ export default {
           // 弹出删除成功提示
           this.$message.success('景点删除成功！');
         }).catch(error => {
-          // 处理删除景点失败的情况
-          console.error('删除景点失败:', error);
           // 弹出删除失败提示
           this.$message.error('景点删除失败，请重试！');
         });
-      }).catch(() => {
-        // 用户取消删除操作，不做任何处理
-      });
+      })
     },
 
     // 编辑按钮点击事件
@@ -269,8 +314,28 @@ export default {
     // 关闭对话框
     handleCloseDialog() {
       this.dialogVisible = false
+      this.reserveDialogVisible = false
       // 清空表单数据
       this.clearForm()
+    },
+
+    // 确定预约
+    confirmReservation() {
+      // 获取预约起止时间
+      const [startTime, endTime] = this.reservationTime;
+      // 执行预约操作，这里假设调用后端接口进行预约
+      addReservation({
+        attractionsId: this.selectedAttractionsId, // 传入景点ID
+        startTime, // 传入预约开始时间
+        endTime // 传入预约结束时间
+      }).then(() => {
+        // 预约成功后的处理逻辑
+        this.$message.success('预约成功！');
+        // 关闭预约对话框
+        this.reserveDialogVisible = false;
+        // 清空预约起止时间
+        this.reservationTime = [];
+      })
     }
   }
 }

@@ -25,7 +25,7 @@ public interface AttractionsReservationService {
     AttractionsReservation getReservationById(Long reservationId);
 
     /**
-     * 添加预约记录
+     * 取消预约
      * @param reservation 待添加的预约信息
      * @return 添加成功返回 true，否则返回 false
      */
@@ -33,8 +33,7 @@ public interface AttractionsReservationService {
 
     /**
      * 更新预约记录
-     * @param reservation 待更新的预约信息
-     * @return 更新成功返回 true，否则返回 false
+     * @param reservationId 待更新的预约信息ID
      */
-    boolean updateReservation(AttractionsReservation reservation);
+    void cancelReservation(Long reservationId);
 }

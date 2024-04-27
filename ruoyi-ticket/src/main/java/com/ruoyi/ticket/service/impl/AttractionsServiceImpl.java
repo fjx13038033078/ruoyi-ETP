@@ -71,4 +71,5 @@ public class AttractionsServiceImpl implements AttractionsService {
         int rows = attractionsMapper.deleteAttractionsById(attractionsId);
         return rows > 0;
     }
+
 }

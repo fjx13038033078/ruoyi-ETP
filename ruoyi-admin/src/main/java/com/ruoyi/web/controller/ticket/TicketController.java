@@ -7,9 +7,7 @@ import com.ruoyi.ticket.domain.Attractions;
 import com.ruoyi.ticket.domain.Ticket;
 import com.ruoyi.ticket.service.TicketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class TicketController extends BaseController {
      * @return
      */
     @GetMapping("/detail")
-    public AjaxResult getTicketById(Long ticketId) {
+    public AjaxResult getTicketById(@RequestParam Long ticketId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
         return success(ticket);
     }
@@ -51,8 +49,8 @@ public class TicketController extends BaseController {
      * @param ticket
      * @return
      */
-    @GetMapping("/add")
-    public AjaxResult addTicket(Ticket ticket) {
+    @PostMapping("/add")
+    public AjaxResult addTicket(@RequestBody Ticket ticket) {
         return toAjax(ticketService.addTicket(ticket));
     }
 
@@ -61,8 +59,8 @@ public class TicketController extends BaseController {
      * @param ticket
      * @return
      */
-    @GetMapping("/update")
-    public AjaxResult updateTicket(Ticket ticket) {
-        return toAjax(ticketService.updateTicket(ticket));
+    @PostMapping("/update")
+    public AjaxResult updateTicket(@RequestBody Ticket ticket) {
+        return toAjax( ticketService.updateTicket(ticket));
     }
 }

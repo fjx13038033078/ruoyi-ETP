@@ -22,16 +22,16 @@ export function getReservation(reservationId) {
 export function addReservation(data) {
   return request({
     url: '/ticket/reservation/add',
-    method: 'get',
-    params: data
+    method: 'post',
+    data: data
   })
 }
 
 // 更新预约信息
-export function updateReservation(data) {
+export function cancelReservation(reservationId) {
   return request({
-    url: '/ticket/reservation/update',
+    url: '/ticket/reservation/cancel',
     method: 'get',
-    params: data
+    params: { reservationId }
   })
 }

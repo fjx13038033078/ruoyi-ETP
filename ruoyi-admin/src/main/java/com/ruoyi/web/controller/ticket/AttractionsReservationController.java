@@ -3,13 +3,10 @@ package com.ruoyi.web.controller.ticket;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.ticket.domain.Attractions;
 import com.ruoyi.ticket.domain.AttractionsReservation;
 import com.ruoyi.ticket.service.AttractionsReservationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class AttractionsReservationController extends BaseController {
      * @return
      */
     @GetMapping("/detail")
-    public AjaxResult getReservationById(Long reservationId) {
+    public AjaxResult getReservationById(@RequestParam Long reservationId) {
         return success(reservationService.getReservationById(reservationId));
     }
 
@@ -52,20 +49,21 @@ public class AttractionsReservationController extends BaseController {
      * @param reservation
      * @return
      */
-    @GetMapping("/add")
-    public AjaxResult addReservation(AttractionsReservation reservation) {
+    @PostMapping("/add")
+    public AjaxResult addReservation(@RequestBody AttractionsReservation reservation) {
         return toAjax(reservationService.addReservation(reservation));
     }
 
     /**
-     * 修改预约
+     * 取消预约
      *
-     * @param reservation
+     * @param reservationId
      * @return
      */
-    @GetMapping("/update")
-    public AjaxResult updateReservation(AttractionsReservation reservation) {
-        return toAjax(reservationService.updateReservation(reservation));
+    @GetMapping ("/cancel")
+    public AjaxResult cancelReservation(@RequestParam Long reservationId) {
+        reservationService.cancelReservation(reservationId);
+        return success();
     }
 
 }
