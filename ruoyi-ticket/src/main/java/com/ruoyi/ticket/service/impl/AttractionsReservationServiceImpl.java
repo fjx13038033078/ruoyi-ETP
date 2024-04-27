@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ruoyi.common.utils.PageUtils.startPage;
 
@@ -77,11 +78,11 @@ public class AttractionsReservationServiceImpl implements AttractionsReservation
      */
     @Override
     public boolean addReservation(AttractionsReservation reservation) {
-        checkReservationTime(reservation);
         // 获取当前登录用户ID
         Long userId = SecurityUtils.getUserId();
         reservation.setUserId(userId);
         reservation.setReservationStatus(0);
+        checkReservationTime(reservation);
         int rows = reservationMapper.addReservation(reservation);
         return rows > 0;
     }
@@ -129,6 +130,18 @@ public class AttractionsReservationServiceImpl implements AttractionsReservation
         long durationHours = Duration.between(startTime, endTime).toHours();
         if (durationHours > 3) {
             throw new RuntimeException("预约时间段不能超过三小时！");
+        }
+
+        List<AttractionsReservation> reservationList = reservationMapper.getAllReservations()
+                .stream()
+                .filter(r -> r.getStartTime().toLocalDate().equals(startTime.toLocalDate()))
+                .filter(r -> r.getAttractionsId().equals(reservation.getAttractionsId()))
+                .filter(r -> r.getUserId().equals(reservation.getUserId()))
+                .filter(r -> r.getReservationStatus() == 0)
+                .collect(Collectors.toList());
+        log.info("reservationList: "+reservationList);
+        if (!reservationList.isEmpty()){
+            throw new RuntimeException("当天您已预约该景点，请勿重复预约");
         }
     }
 

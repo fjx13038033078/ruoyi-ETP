@@ -16,7 +16,7 @@
 
     <!-- 查询所有预约记录 -->
     <select id="getAllReservations" resultMap="ReservationResultMap">
-        SELECT * FROM etp_reservation
+        SELECT * FROM etp_reservation order by reservation_id desc
     </select>
 
     <!-- 根据ID查询预约记录 -->
@@ -26,12 +26,12 @@
 
     <!-- 根据用户ID查询预约记录 -->
     <select id="getReservationsByUserId" parameterType="long" resultMap="ReservationResultMap">
-        SELECT * FROM etp_reservation WHERE user_id = #{userId}
+        SELECT * FROM etp_reservation WHERE user_id = #{userId} order by reservation_id desc
     </select>
 
     <!-- 根据景点ID查询预约记录 -->
     <select id="getReservationsByAttractionsId" parameterType="long" resultMap="ReservationResultMap">
-        SELECT * FROM etp_reservation WHERE attractions_id = #{attractionsId}
+        SELECT * FROM etp_reservation WHERE attractions_id = #{attractionsId} order by reservation_id desc
     </select>
 
     <!-- 添加预约记录 -->
