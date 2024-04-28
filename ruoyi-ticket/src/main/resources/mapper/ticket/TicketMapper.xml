@@ -19,7 +19,7 @@
 
     <!-- 查询所有购票记录 -->
     <select id="getAllTickets" resultMap="TicketResultMap">
-        SELECT * FROM etp_ticket
+        SELECT * FROM etp_ticket order by transaction_time desc
     </select>
 
     <!-- 根据ID查询购票记录 -->
@@ -29,12 +29,12 @@
 
     <!-- 根据用户ID查询购票记录 -->
     <select id="getTicketsByUserId" parameterType="long" resultMap="TicketResultMap">
-        SELECT * FROM etp_ticket WHERE user_id = #{userId}
+        SELECT * FROM etp_ticket WHERE user_id = #{userId} order by transaction_time desc
     </select>
 
     <!-- 根据景点ID查询购票记录 -->
     <select id="getTicketsByAttractionsId" parameterType="long" resultMap="TicketResultMap">
-        SELECT * FROM etp_ticket WHERE attractions_id = #{attractionsId}
+        SELECT * FROM etp_ticket WHERE attractions_id = #{attractionsId} order by transaction_time desc
     </select>
 
     <!-- 添加购票记录 -->
@@ -49,7 +49,7 @@
         <set>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="attractionsId != null">attractions_id = #{attractionsId},</if>
-            <if test="reservationId != null">attractions_id = #{reservationId},</if>
+            <if test="reservationId != null">reservation_id = #{reservationId},</if>
             <if test="ticketType != null">ticket_type = #{ticketType},</if>
             <if test="ticketStatus != null">ticket_status = #{ticketStatus},</if>
             <if test="ticketAmount != null">ticket_amount = #{ticketAmount},</if>

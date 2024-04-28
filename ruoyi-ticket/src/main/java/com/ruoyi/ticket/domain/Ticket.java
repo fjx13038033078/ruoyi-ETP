@@ -1,6 +1,7 @@
 package com.ruoyi.ticket.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
@@ -36,9 +37,21 @@ public class Ticket implements Serializable {
     private Long userId;
 
     /**
+     * 用户名
+     */
+    @TableField(exist = false)
+    private String userName;
+
+    /**
      * 景点ID
      */
     private Long attractionsId;
+
+    /**
+     * 景点名称
+     */
+    @TableField(exist = false)
+    private String attractionsName;
 
     /**
      * 预约ID
@@ -46,7 +59,7 @@ public class Ticket implements Serializable {
     private Long reservationId;
 
     /**
-     * 门票类型：0 收入，1 全价票，2 优惠票
+     * 门票类型：0 全价票，1 优惠票，
      */
     private Integer ticketType;
 

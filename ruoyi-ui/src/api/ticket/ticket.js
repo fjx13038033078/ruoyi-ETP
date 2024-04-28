@@ -27,6 +27,15 @@ export function addTicket(data) {
   })
 }
 
+// 退票
+export function refundTicket(ticketId) {
+  return request({
+    url: '/ticket/ticket/refund',
+    method: 'get',
+    params: { ticketId }
+  })
+}
+
 // 更新门票信息
 export function updateTicket(data) {
   return request({

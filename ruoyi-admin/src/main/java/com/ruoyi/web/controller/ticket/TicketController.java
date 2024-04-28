@@ -55,6 +55,17 @@ public class TicketController extends BaseController {
     }
 
     /**
+     * 退票
+     *
+     * @param ticketId 待退款的购票记录ID
+     */
+    @GetMapping("/refund")
+    public AjaxResult refundTicket(@RequestParam Long ticketId) {
+        ticketService.refundTicket(ticketId);
+        return success();
+    }
+
+    /**
      * 更新门票
      * @param ticket
      * @return

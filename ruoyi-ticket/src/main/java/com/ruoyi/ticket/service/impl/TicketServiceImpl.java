@@ -20,6 +20,8 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ruoyi.common.utils.PageUtils.startPage;
+
 /**
  * @Author fanjaixing
  * @Date 2024/4/25 23:28
@@ -46,11 +48,25 @@ public class TicketServiceImpl implements TicketService {
      */
     @Override
     public List<Ticket> getAllTickets() {
-        return ticketMapper.getAllTickets();
+        // 获取当前登录用户ID
+        Long userId = SecurityUtils.getUserId();
+        String role = iSysRoleService.selectStringRoleByUserId(userId);
+        if ("admin".equals(role)) {
+            startPage();
+            List<Ticket> allTickets = ticketMapper.getAllTickets();
+            fillUserAndAttractionsName(allTickets);
+            return allTickets;
+        } else {
+            startPage();
+            List<Ticket> ticketsByUserId = ticketMapper.getTicketsByUserId(userId);
+            fillUserAndAttractionsName(ticketsByUserId);
+            return ticketsByUserId;
+        }
     }
 
     /**
      * 根据购票记录ID获取购票信息
+     *
      * @param ticketId 购票记录ID
      * @return 购票信息
      */
@@ -61,6 +77,7 @@ public class TicketServiceImpl implements TicketService {
 
     /**
      * 添加购票记录
+     *
      * @param ticket 待添加的购票信息
      * @return 添加成功返回 true，否则返回 false
      */
@@ -74,12 +91,12 @@ public class TicketServiceImpl implements TicketService {
         BigDecimal userBalance = iSysUserService.selectUserById(userId).getBalance();
         // 获取当前用户的角色
         String role = iSysRoleService.selectStringRoleByUserId(userId);
-        if ("admin".equals(role)) {
-            throw new RuntimeException("管理员无法购买");
-        }
+//        if ("admin".equals(role)) {
+//            throw new RuntimeException("管理员无法购买");
+//        }
         Long reservationId = ticket.getReservationId();
         AttractionsReservation reservation = attractionsReservationService.getReservationById(reservationId);
-        if (reservation.getReservationStatus() == 1){
+        if (reservation.getReservationStatus() == 1) {
             throw new RuntimeException("预约已取消，无法支付，请重新预约");
         }
 
@@ -122,7 +139,56 @@ public class TicketServiceImpl implements TicketService {
     }
 
     /**
+     * 处理退款操作
+     *
+     * @param ticketId 待退款的购票记录ID
+     */
+    @Override
+    public void refundTicket(Long ticketId) {
+        // 获取购票信息
+        Ticket ticket = ticketMapper.getTicketById(ticketId);
+
+        // 判断购票记录是否存在
+        if (ticket == null) {
+            throw new RuntimeException("购票记录不存在，无法退款");
+        }
+
+        // 判断购票记录的状态是否为已购买
+        if (ticket.getTicketStatus() == 1) {
+            throw new RuntimeException("请勿重复退款");
+        }
+
+        // 获取购票金额
+        BigDecimal ticketAmount = ticket.getTicketAmount();
+
+        // 获取当前用户的余额
+        Long userId = ticket.getUserId();
+        BigDecimal userBalance = iSysUserService.selectUserById(userId).getBalance();
+
+        // 更新用户余额
+        BigDecimal newBalance = userBalance.add(ticketAmount);
+        SysUser currentUser = iSysUserService.selectUserById(userId);
+        currentUser.setBalance(newBalance);
+        iSysUserService.updateUserBalance(currentUser);
+
+        // 更新购票记录状态为已退款
+        ticket.setTicketStatus(1);
+        ticketMapper.updateTicket(ticket);
+
+        // 获取管理员的余额
+        Long adminId = 1L; // 管理员用户ID
+        BigDecimal adminBalance = iSysUserService.selectUserById(adminId).getBalance();
+
+        // 更新管理员余额
+        BigDecimal newAdminBalance = adminBalance.subtract(ticketAmount);
+        SysUser admin = iSysUserService.selectUserById(adminId);
+        admin.setBalance(newAdminBalance);
+        iSysUserService.updateUserBalance(admin);
+    }
+
+    /**
      * 更新购票记录
+     *
      * @param ticket 待更新的购票信息
      * @return 更新成功返回 true，否则返回 false
      */
@@ -131,4 +197,30 @@ public class TicketServiceImpl implements TicketService {
         int rows = ticketMapper.updateTicket(ticket);
         return rows > 0;
     }
+
+    /**
+     * 填充用户和景点名称
+     *
+     * @param tickets 待填充的购票记录列表
+     */
+    private void fillUserAndAttractionsName(List<Ticket> tickets) {
+        tickets.forEach(ticket -> {
+            Long userId = ticket.getUserId();
+            Long attractionsId = ticket.getAttractionsId();
+            SysUser user = iSysUserService.selectUserById(userId);
+            Attractions attractions = attractionsService.getAttractionsById(attractionsId);
+            if (user != null){
+                ticket.setUserName(user.getNickName());
+            } else {
+                ticket.setUserName("用户已注销");
+            }
+            if (attractions != null){
+                ticket.setAttractionsName(attractions.getAttractionsName());
+            } else {
+                ticket.setAttractionsName("景点已删除");
+            }
+
+        });
+    }
+
 }

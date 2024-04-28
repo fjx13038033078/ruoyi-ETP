@@ -27,7 +27,7 @@ export function addReservation(data) {
   })
 }
 
-// 更新预约信息
+// 取消预约信息
 export function cancelReservation(reservationId) {
   return request({
     url: '/ticket/reservation/cancel',
