@@ -21,7 +21,7 @@
           <el-table-column label="交易金额" prop="ticketAmount" align="center"></el-table-column>
           <el-table-column label="交易时间" prop="transactionTime" align="center"></el-table-column>
           <el-table-column label="用户余额" prop="balance" align="center"></el-table-column>
-          <el-table-column label="操作" align="center" width="230px">
+          <el-table-column label="操作" align="center" width="140px">
             <template slot-scope="scope">
               <el-button type="success" size="mini" @click="handleRefund(scope.row)" v-hasPermi="['ticket:ticket:refund']">
                 退款

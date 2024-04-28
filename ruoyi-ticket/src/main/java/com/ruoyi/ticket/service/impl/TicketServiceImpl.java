@@ -11,6 +11,7 @@ import com.ruoyi.ticket.mapper.TicketMapper;
 import com.ruoyi.ticket.service.AttractionsReservationService;
 import com.ruoyi.ticket.service.AttractionsService;
 import com.ruoyi.ticket.service.TicketService;
+import com.sun.xml.internal.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ruoyi.common.utils.PageUtils.startPage;
 
@@ -91,13 +93,23 @@ public class TicketServiceImpl implements TicketService {
         BigDecimal userBalance = iSysUserService.selectUserById(userId).getBalance();
         // 获取当前用户的角色
         String role = iSysRoleService.selectStringRoleByUserId(userId);
-//        if ("admin".equals(role)) {
-//            throw new RuntimeException("管理员无法购买");
-//        }
+        if ("admin".equals(role)) {
+            throw new RuntimeException("管理员无法购买");
+        }
         Long reservationId = ticket.getReservationId();
         AttractionsReservation reservation = attractionsReservationService.getReservationById(reservationId);
         if (reservation.getReservationStatus() == 1) {
             throw new RuntimeException("预约已取消，无法支付，请重新预约");
+        }
+
+        // 判断是否已经支付
+        List<Ticket> collect = ticketMapper.getTicketsByUserId(userId)
+                .stream()
+                .filter(ticket1 -> ticket1.getTicketStatus() == 0)
+                .filter(ticket1 -> ticket1.getReservationId().equals(reservationId))
+                .collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            throw new RuntimeException("您已经支付过该预约订单，请勿重复支付");
         }
 
         Attractions attractions = attractionsService.getAttractionsById(reservation.getAttractionsId());
@@ -173,6 +185,7 @@ public class TicketServiceImpl implements TicketService {
 
         // 更新购票记录状态为已退款
         ticket.setTicketStatus(1);
+        ticket.setBalance(newBalance);
         ticketMapper.updateTicket(ticket);
 
         // 获取管理员的余额
