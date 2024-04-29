@@ -8,7 +8,9 @@ import com.ruoyi.ticket.service.AttractionsReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author 范佳兴
@@ -66,4 +68,23 @@ public class AttractionsReservationController extends BaseController {
         return success();
     }
 
+    /**
+     * 根据预约ID获取应支付票价
+     * @param reservationId 预约ID
+     * @return 实际票价，应付票价
+     */
+    @GetMapping("/price")
+    public AjaxResult getTicketPriceByReservation(@RequestParam Long reservationId){
+        return success(reservationService.getTicketPriceByReservation(reservationId));
+    }
+
+    /**
+     * 获取每个景点被预约的次数
+     *
+     * @return 每个景点被预约的次数的映射，键为景点名称，值为预约次数
+     */
+    @GetMapping("/count")
+    public AjaxResult getReservationCountsByAttractions(){
+        return success(reservationService.getReservationCountsByAttractions());
+    }
 }

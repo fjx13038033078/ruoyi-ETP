@@ -35,3 +35,18 @@ export function cancelReservation(reservationId) {
     params: { reservationId }
   })
 }
+
+export function getTicketPriceByReservation(reservationId) {
+  return request({
+    url: '/ticket/reservation/price',
+    method: 'get',
+    params: { reservationId }
+  })
+}
+
+export function getReservationCountsByAttractions() {
+  return request({
+    url: '/ticket/reservation/count',
+    method: 'get',
+  });
+}

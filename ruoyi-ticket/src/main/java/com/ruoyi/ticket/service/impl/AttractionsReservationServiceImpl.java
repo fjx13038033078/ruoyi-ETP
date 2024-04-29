@@ -13,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ruoyi.common.utils.PageUtils.startPage;
@@ -170,4 +173,64 @@ public class AttractionsReservationServiceImpl implements AttractionsReservation
             }
         }
     }
+
+    /**
+     * 根据预约ID获取应支付票价
+     * @param reservationId 预约ID
+     * @return 实际票价，应付票价
+     */
+    @Override
+    public Map<BigDecimal,BigDecimal> getTicketPriceByReservation(Long reservationId){
+        // 初始化结果集
+        Map<BigDecimal, BigDecimal> priceMap = new HashMap<>();
+
+        // 获取预约信息
+        AttractionsReservation reservation = reservationMapper.getReservationById(reservationId);
+        if (reservation == null) {
+            throw new IllegalArgumentException("预约ID无效：" + reservationId);
+        }
+
+        // 获取景点信息
+        Attractions attractions = attractionsMapper.getAttractionsById(reservation.getAttractionsId());
+        if (attractions == null) {
+            throw new IllegalArgumentException("无法找到对应的景点信息");
+        }
+
+        // 获取票价
+        BigDecimal ticketPrice = attractions.getTicketPrice();
+
+        // 获取用户角色
+        Long userId = SecurityUtils.getUserId();
+        String role = iSysRoleService.selectStringRoleByUserId(userId);
+
+        // 根据用户角色确定实际票价（这里简化处理，如果是VIP用户则票价打五折）
+        BigDecimal actualTicketPrice = "common".equals(role) ? ticketPrice : ticketPrice.multiply(BigDecimal.valueOf(0.5));
+
+        // 将实际票价和应支付票价放入结果集
+        priceMap.put(actualTicketPrice, ticketPrice);
+
+        return priceMap;
+    }
+
+    /**
+     * 获取每个景点被预约的次数
+     *
+     * @return 每个景点被预约的次数的映射，键为景点名称，值为预约次数
+     */
+    @Override
+    public Map<String, Integer> getReservationCountsByAttractions() {
+        List<AttractionsReservation> reservations = reservationMapper.getAllReservations();
+        Map<String, Integer> reservationCounts = new HashMap<>();
+
+        // 计算每个景点的预约次数
+        for (AttractionsReservation reservation : reservations) {
+            Long attractionsId = reservation.getAttractionsId();
+            Attractions attractions = attractionsMapper.getAttractionsById(attractionsId);
+            String attractionsName = attractions != null ? attractions.getAttractionsName() : "未知景点";
+            reservationCounts.put(attractionsName, reservationCounts.getOrDefault(attractionsName, 0) + 1);
+        }
+
+        return reservationCounts;
+    }
+
 }

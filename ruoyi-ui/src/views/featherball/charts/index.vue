@@ -32,6 +32,7 @@ export default {
     loadDataAndDrawPieChart() {
       // 调用后端接口获取数据
       getBalanceTotalByType().then(response => {
+        console.log('Response data:', response.data); // 添加这行日志
         // 数据处理
         const data = response.data;
         const legendData = [];
@@ -107,6 +108,8 @@ export default {
 
         // 使用配置项绘制饼图
         this.chartInstance.setOption(option);
+      }).catch(error => {
+        console.error('Error fetching data:', error);
       });
     }
   }

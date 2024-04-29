@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { listReservations, cancelReservation } from '@/api/ticket/reservation'
+import {listReservations, cancelReservation, getTicketPriceByReservation} from '@/api/ticket/reservation'
 import {addTicket} from "@/api/ticket/ticket";
 
 export default {
@@ -87,12 +87,24 @@ export default {
     handlePurchase(row) {
       // 获取预订信息
       const { reservationId } = row;
-      // 调用添加订单记录接口
-      addTicket({
-        reservationId: reservationId,
-      }).then(() => {
-        // 添加订单记录成功后的处理逻辑
-        this.$message.success('购买成功！');
+      // 调用接口获取预约的原始票价
+      getTicketPriceByReservation(reservationId).then(response => {
+        const actualPrice = Object.keys(response.data)[0]; // 获取实际票价
+        const originalPrice = response.data[actualPrice]; // 获取原始票价
+        // 弹出提示框
+        this.$confirm(`该预约原始票价为${originalPrice}元，你实际需要支付${actualPrice}元，确认购票吗？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 调用添加订单记录接口
+          addTicket({
+            reservationId: reservationId,
+          }).then(() => {
+            // 添加订单记录成功后的处理逻辑
+            this.$message.success('购买成功！');
+          });
+        });
       });
     },
   }

@@ -64,7 +64,7 @@ public class Ticket implements Serializable {
     private Integer ticketType;
 
     /**
-     * 门票状态：0已购票，1已退票
+     * 门票状态：0 已购票，1 已退票
      */
     private Integer ticketStatus;
 

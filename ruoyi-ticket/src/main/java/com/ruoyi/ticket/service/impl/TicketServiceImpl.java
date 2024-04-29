@@ -11,7 +11,6 @@ import com.ruoyi.ticket.mapper.TicketMapper;
 import com.ruoyi.ticket.service.AttractionsReservationService;
 import com.ruoyi.ticket.service.AttractionsService;
 import com.ruoyi.ticket.service.TicketService;
-import com.sun.xml.internal.bind.v2.TODO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -134,7 +133,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setReservationId(reservationId);
         ticket.setAttractionsId(reservation.getAttractionsId());
         ticket.setUserId(userId);
-        ticket.setTicketType("common".equals(role) ? 1 : 2);
+        ticket.setTicketType("common".equals(role) ? 0 : 1);
         ticket.setTicketAmount(actualTransactionAmount);
         ticket.setTransactionTime(LocalDateTime.now());
         ticket.setBalance(newBalance);
@@ -232,7 +231,6 @@ public class TicketServiceImpl implements TicketService {
             } else {
                 ticket.setAttractionsName("景点已删除");
             }
-
         });
     }
 
