@@ -69,7 +69,6 @@
 <script>
 import {listNotice, getNotice} from "@/api/system/notice";
 import request from '@/utils/request';
-import {getVenueCourtCountMap} from "@/api/featherball/court";
 import * as echarts from 'echarts'
 
 
@@ -146,13 +145,6 @@ export default {
         this.selectedNotice.content = response.data.noticeContent;
         this.showNoticeDialog = true;
         this.loading = false;
-      });
-    },
-    // 获取场馆场地数量映射的数据并更新到图表中
-    fetchVenueCourtMapData() {
-      getVenueCourtCountMap().then(response => {
-        this.venueCourtMapData = response.data;
-        this.updateVenueCourtChart(); // 获取到数据后更新图表
       });
     },
     // 初始化 echarts 柱状图

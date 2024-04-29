@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.ticket;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.featherball.domain.Court;
 import com.ruoyi.ticket.domain.Attractions;
 import com.ruoyi.ticket.service.AttractionsService;
 import lombok.RequiredArgsConstructor;
