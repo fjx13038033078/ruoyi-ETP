@@ -8,12 +8,12 @@
           <el-table-column label="门票记录ID" prop="ticketId" align="center"></el-table-column>
           <el-table-column label="景点名称" prop="attractionsName" align="center"></el-table-column>
           <el-table-column label="用户名称" prop="userName" align="center"></el-table-column>
-          <el-table-column label="门票状态" prop="ticketType" align="center">
+          <el-table-column label="门票类型" prop="ticketType" align="center">
             <template slot-scope="scope">
               {{ scope.row.ticketType === 0 ? '全价票' : '优惠票' }}
             </template>
           </el-table-column>
-          <el-table-column label="门票状态" prop="ticketStatus" align="center">
+          <el-table-column label="购票状态" prop="ticketStatus" align="center">
             <template slot-scope="scope">
               {{ scope.row.ticketStatus === 0 ? '已购票' : '已退票' }}
             </template>
