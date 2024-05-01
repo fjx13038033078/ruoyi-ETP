@@ -90,7 +90,7 @@
         </el-dialog>
 
         <!-- 预约对话框 -->
-        <el-dialog :visible.sync="reserveDialogVisible" title="预约场地" width="30%" @close="handleCloseDialog">
+        <el-dialog :visible.sync="reserveDialogVisible" title="景点预约" width="30%" @close="handleCloseDialog">
           <!-- 预约对话框内容 -->
           <div>
             <!-- 预约起止时间选择器 -->
