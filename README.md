@@ -1,5 +1,5 @@
 
-# CFCR（Court Booking for Featherball Courts的缩写）
+# ETP（electronic ticket purchase system的缩写）
 
 ## 内置功能
 
